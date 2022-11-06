@@ -6,6 +6,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import com.ramiro.java17demo.handler.MyErrorHandler;
+
 @SpringBootApplication
 public class Java17DemoApplication {
 
@@ -15,7 +17,9 @@ public class Java17DemoApplication {
 	
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-		return builder.build();
+		RestTemplate restTemplate = builder.build();
+		restTemplate.setErrorHandler(new MyErrorHandler());
+		return restTemplate;
 	}
 
 }
