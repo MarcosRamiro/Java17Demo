@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 import com.ramiro.java17demo.record.Person;
@@ -15,7 +17,7 @@ import com.ramiro.java17demo.service.ApiService;
 public class ApiServiceImpl implements ApiService {
 
 	private final RestTemplate restTemplate;
-	private final String URL_PEOPLE = "https://swapi.dev/api/people";
+	private static final String URL_PEOPLE = "https://swapi.dev/api/people";
 
 	@Autowired
 	public ApiServiceImpl(RestTemplate restTemplate) {
@@ -40,17 +42,21 @@ public class ApiServiceImpl implements ApiService {
 	@Override
 	public Person getPerson(Integer id) {
 
-		Person person = callApi(String.format("%s/%d", URL_PEOPLE, id), Person.class);
+		return callApi(String.format("%s/%d", URL_PEOPLE, id), Person.class);
 
-		return person;
 	}
 
 	private <T> T callApi(String url, Class<T> classz) {
 
 		ResponseEntity<T> entity = restTemplate.getForEntity(url, classz);
 
-		return entity.getBody();
+		return nonNull(entity.getBody());
 
+	}
+	
+	private static <T> T nonNull(@Nullable T result) {
+		Assert.state(result != null, "No result");
+		return result;
 	}
 
 }

@@ -16,14 +16,18 @@ public class MyErrorHandler implements ResponseErrorHandler {
 		return response.getStatusCode() != HttpStatus.OK;
 	}
 
+	/***
+	 * This method is empty because the handle is in
+	 * @MyErrorHandler.handleError(URI url, HttpMethod method, ClientHttpResponse response) 
+	 */
 	@Override
 	public void handleError(ClientHttpResponse response) throws IOException {
-				
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
-		throw new RuntimeException(
+		throw new IOException(
 				String.format("Ocorreu o erro [StatusCode %d %s] na chamada [URL %S %s]."
 						,response.getStatusCode().value()
 						,response.getStatusText()

@@ -1,6 +1,8 @@
 package com.ramiro.java17demo.record;
 
-public record Produto(String nome, String descricao) {
+import java.io.Serializable;
+
+public record Produto(String nome, String descricao) implements Serializable {
 
 	public Produto{
 		

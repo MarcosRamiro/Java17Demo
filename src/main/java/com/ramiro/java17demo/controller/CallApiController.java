@@ -1,7 +1,6 @@
 package com.ramiro.java17demo.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,7 @@ public class CallApiController {
 		if (name != null) {
 			List<Person> peopleFiltred = people.stream()
 					.filter(person -> person.name().toLowerCase().contains(name.toLowerCase()))
-					.collect(Collectors.toList());
+					.toList();
 
 			return new ResponseEntity<>(peopleFiltred, HttpStatus.OK);
 		}
