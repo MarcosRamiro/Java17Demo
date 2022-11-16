@@ -26,23 +26,25 @@ public class HelloController {
 	@GetMapping("/produto")
 	public ResponseEntity<List<String>> produto() {
 		
-		List<Produto> produtos = List.of(
+		
+		List<String> produtosFiltrado = createProducts().stream()
+					.map(Produto::nome)
+					.filter(nomeProduto -> !nomeProduto.equalsIgnoreCase("Pão"))
+					.map(String::toUpperCase)
+					.toList();
+			
+		return new ResponseEntity<>(produtosFiltrado, HttpStatus.OK);
+		
+	}
+
+	private List<Produto> createProducts() {
+
+		return List.of(
 				new Produto("Bolacha", MSG_TA_BEM_BARATO),
 				new Produto("Sabonete", MSG_TA_BEM_BARATO),
 				new Produto("Alho", MSG_TA_BEM_BARATO),
 				new Produto("Danone1", "Tá caro")
 				);
-		
-		List<String> produtosFiltrado = 
-		produtos.stream()
-			.map(Produto::nome)
-			.filter(nomeProduto -> !nomeProduto.equalsIgnoreCase("Pão"))
-			.map(String::toUpperCase)
-			.toList();
-			
-			
-		return new ResponseEntity<>(produtosFiltrado, HttpStatus.OK);
-		
 	}
 	
 }

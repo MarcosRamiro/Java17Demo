@@ -1,10 +1,14 @@
 package com.ramiro.java17demo.controller;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toSet;
+
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,31 +31,41 @@ public class CallApiController {
 
 	@GetMapping
 	@RequestMapping("/people")
-	public ResponseEntity<List<Person>> people(@RequestParam(required = false) String name) {
+	public List<Person> people(@RequestParam(required = false) String name) {
 
-		List<Person> people = apiService.getPeople();
+		List<Person> people = getPeople();
 
 		if (name != null) {
-			List<Person> peopleFiltred = people.stream()
-					.filter(person -> person.name().toLowerCase().contains(name.toLowerCase()))
-					.toList();
+			return people.stream().filter(person -> person.name().toLowerCase().contains(name.toLowerCase())).toList();
 
-			return new ResponseEntity<>(peopleFiltred, HttpStatus.OK);
 		}
 
-		return new ResponseEntity<>(people, HttpStatus.OK);
+		return people;
 
 	}
 
-
 	@GetMapping
 	@RequestMapping("/people/{id}")
-	public ResponseEntity<Person> person(@PathVariable Integer id) {
+	public Person person(@PathVariable Integer id) {
 
-		Person person = apiService.getPerson(id);
+		return apiService.getPerson(id);
 
-		return new ResponseEntity<>(person, HttpStatus.OK);
+	}
 
+	@GetMapping
+	@RequestMapping("/people/groupby")
+	public Map<String, Set<String>> groupBy() {
+
+		List<Person> people = getPeople();
+
+		//return people.stream().collect(Collectors.groupingBy(Person::skin_color));
+		//return people.stream().collect(Collectors.groupingBy(Person::skin_color, Collectors.summingInt(p -> p.films().size())));
+		return people.stream().collect(groupingBy(Person::skinColor, mapping(Person::name, toSet())));
+
+	}
+
+	private List<Person> getPeople() {
+		return apiService.getPeople();
 	}
 
 }
